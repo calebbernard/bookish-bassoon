@@ -134,10 +134,11 @@ def render_all():
 			visible = libtcod.map_is_in_fov(fov_map, x, y)
 			wall = map[x][y].block_sight
 			if not visible:
-				if wall:
-					libtcod.console_set_char_background(con, x, y, color_dark_wall, libtcod.BKGND_SET)
-				else:
-					libtcod.console_set_char_background(con, x, y, color_dark_ground, libtcod.BKGND_SET)
+				if map[x][y].explored:
+					if wall:
+						libtcod.console_set_char_background(con, x, y, color_dark_wall, libtcod.BKGND_SET)
+					else:
+						libtcod.console_set_char_background(con, x, y, color_dark_ground, libtcod.BKGND_SET)
 			else:
 				if wall:
 					libtcod.console_set_char_background(con, x, y, color_light_wall, libtcod.BKGND_SET)
@@ -150,6 +151,7 @@ def render_all():
 		fov_recompute = False
 		libtcod.map_compute_fov(fov_map, player.x, player.y, TORCH_RADIUS, FOV_LIGHT_WALLS, FOV_ALGO)
 	libtcod.console_blit(con, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0)
+	map[x][y].explored = True
 
 def handle_keys():
 	global fov_recompute
