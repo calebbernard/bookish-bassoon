@@ -8,11 +8,11 @@ import tcod as libtcod
 
 #actual size of the window
 SCREEN_WIDTH = 80
-SCREEN_HEIGHT = 50
+SCREEN_HEIGHT = 25
 
 # Dungeon generation
-MAP_WIDTH = 80
-MAP_HEIGHT= 43
+MAP_WIDTH = SCREEN_WIDTH
+MAP_HEIGHT= SCREEN_HEIGHT - 7
 ROOM_MAX_SIZE = 10
 ROOM_MIN_SIZE = 6
 MAX_ROOMS = 30
@@ -279,6 +279,7 @@ def render_all():
 					libtcod.console_set_char_background(con, x, y, color_light_wall, libtcod.BKGND_SET)
 				else:
 					libtcod.console_set_char_background(con, x, y, color_light_ground, libtcod.BKGND_SET)
+				map[x][y].explored = True
 	for object in objects:
 		if libtcod.map_is_in_fov(fov_map, object.x, object.y):
 			if object != player:
@@ -286,7 +287,6 @@ def render_all():
 	player.draw()
 
 	libtcod.console_blit(con, 0, 0, MAP_WIDTH, MAP_HEIGHT, 0, 0, 0)
-	map[x][y].explored = True
 	libtcod.console_set_default_foreground(con, libtcod.white)
 	libtcod.console_set_default_background(panel, libtcod.black)
 	libtcod.console_clear(panel)
