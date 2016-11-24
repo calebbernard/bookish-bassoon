@@ -593,9 +593,6 @@ def get_names_under_mouse():
 	return names.capitalize()
 
 def main_menu():
-	libtcod.console_clear(con)
-	libtcod.console_blit(con, 0, 0, MAP_WIDTH, MAP_HEIGHT, 0, 0, 0)
-	libtcod.console_flush()
 	#img = libtcod.image_load('menu_background.png')
 	while not libtcod.console_is_window_closed():
 		#libtcod.image_blit_2x(img,0,0,0)
