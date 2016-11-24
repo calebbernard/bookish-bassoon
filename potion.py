@@ -62,8 +62,10 @@ color_light_ground = libtcod.Color(200, 180, 50)
 
 class Tile:
     #a tile of the map and its properties
-    def __init__(self, blocked, block_sight = None):
+    def __init__(self, blocked, block_sight = None, objects=[]):
         self.blocked = blocked
+
+        self.objects = objects
 
         #all tiles start unexplored
         self.explored = False
@@ -156,12 +158,9 @@ class Object:
         objects.insert(0, self)
 
     def draw(self):
-        #only show if it's visible to the player; or it's set to "always visible" and on an explored tile
-        if (libtcod.map_is_in_fov(fov_map, self.x, self.y) or
-                (self.always_visible and map[self.x][self.y].explored)):
-            #set the color and then draw the character that represents this object at its position
-            libtcod.console_set_default_foreground(con, self.color)
-            libtcod.console_put_char(con, self.x, self.y, self.char, libtcod.BKGND_NONE)
+        #set the color and then draw the character that represents this object at its position
+        libtcod.console_set_default_foreground(con, self.color)
+        libtcod.console_put_char(con, self.x, self.y, self.char, libtcod.BKGND_NONE)
 
     def clear(self):
         #erase the character that represents this object
@@ -646,13 +645,11 @@ def nethack_render():
                         libtcod.console_put_char_ex(con, x, y, '.', libtcod.white, libtcod.black)
                         #since it's visible, explore it
                     map[x][y].explored = True
-
-    #draw all objects in the list, except the player. we want it to
-    #always appear over all other objects! so it's drawn later.
-    for object in objects:
-        if object != player:
-            object.draw()
-    player.draw()
+            for object in objects:
+                #only show if it's visible to the player; or it's set to "always visible" and on an explored tile
+                if (libtcod.map_is_in_fov(fov_map, object.x, object.y) or
+                    (object.always_visible and map[object.x][object.y].explored)):
+                    object.draw()
 
     #blit the contents of "con" to the root console
     libtcod.console_blit(con, 0, 0, MAP_WIDTH, MAP_HEIGHT, 0, 0, 1)
@@ -1132,8 +1129,8 @@ def play_game():
         check_level_up()
 
         #erase all objects at their old locations, before they move
-        for object in objects:
-            object.clear()
+        #for object in objects:
+        #    object.clear()
 
         #handle keys and exit game if needed
         player_action = handle_keys()
